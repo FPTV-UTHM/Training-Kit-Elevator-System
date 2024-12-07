@@ -56,29 +56,6 @@ void emergency()
     if(getPBLOP()==32) setup();
   }
 }
-void moveStepper(int arah, int bilangan)
-{ digitalWrite(A4988EN,LOW);              //turn ON A4988
-  digitalWrite(A4988DI,arah);             //direction
-  
-  for(int i=0;i<bilangan;i++)             //moving STEPS to desired FLOOR
-  { if(digitalRead(pbE)==0) flagEmergency=1;
-    digitalWrite(A4988ST,HIGH); delay(1);
-    digitalWrite(A4988ST,LOW);  delay(1);
-    if(arah==1) 
-    { if(((i%600)==0) && initHome==1) 
-      { oledDisplay(arah,lantai); lantai++; 
-        if(flagEmergency==1) emergency(); 
-      }
-    }
-    if(arah==0) 
-    { if(((i%600)==0) && initHome==1) 
-      { oledDisplay(arah,lantai); lantai--; 
-        if(flagEmergency==1) emergency(); 
-      }
-    }
-  }
-  digitalWrite(A4988EN,HIGH);             //turn OFF A4988
-}
 void resetNumber()
 { digitalWrite(RES,HIGH); delay(10);
   digitalWrite(RES,LOW);
@@ -89,6 +66,29 @@ void setNumber(int nombor)
   { digitalWrite(CLK,HIGH); delay(1);
     digitalWrite(CLK,LOW);
   }
+}
+void moveStepper(int arah, int bilangan)
+{ digitalWrite(A4988EN,LOW);              //turn ON A4988
+  digitalWrite(A4988DI,arah);             //direction
+  
+  for(int i=0;i<bilangan;i++)             //moving STEPS to desired FLOOR
+  { if(digitalRead(pbE)==0) flagEmergency=1;
+    digitalWrite(A4988ST,HIGH); delay(1);
+    digitalWrite(A4988ST,LOW);  delay(1);
+    if(arah==1) 
+    { if(((i%600)==0) && initHome==1) 
+      { oledDisplay(arah,lantai); setNumber(lantai); lantai++; 
+        if(flagEmergency==1) emergency(); 
+      }
+    }
+    if(arah==0) 
+    { if(((i%600)==0) && initHome==1) 
+      { oledDisplay(arah,lantai); setNumber(lantai); lantai--; 
+        if(flagEmergency==1) emergency(); 
+      }
+    }
+  }
+  digitalWrite(A4988EN,HIGH);             //turn OFF A4988
 }
 void doorStatus (String status)
 { if(status=="open")  
